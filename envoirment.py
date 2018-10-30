@@ -1,12 +1,10 @@
 import numpy as np
+from agent import agent
 
 class Env:
-    def __init__(self):
-        self.states = np.zeros((100,3))
-
-    def print(self):
-        print(self.states)
-
+    # def __init__(self):
+    
+    a = agent()
 
     def getTraDen(self):
         #Some Logic to get Traffic Density
@@ -18,3 +16,5 @@ class Env:
         traffic density after the light turn red again
         '''
         return 0
+
+    

@@ -1,5 +1,5 @@
 import numpy as np
-from envoirment import Env
+
 
 class agent:
 
@@ -13,7 +13,7 @@ class agent:
 
 
     def take_action(self,traf_den):
-          r = np.random.rand()
+        r = np.random.rand() # generating a random no. for eps greedy
         if r < self.eps :
             #take random action i.e. explore
             choice = (np.random.choice(10))  #take a random choice from the 6 possile actions
@@ -36,7 +36,7 @@ class agent:
 
     def on_red(self,traf_den):
         #call take_action to take a action
-        return take_action(traf_den)
+        return self.take_action(traf_den)
 
     def on_reward(self,reward):
         self.state[self.last_action[0],self.last_action[1]] += reward
