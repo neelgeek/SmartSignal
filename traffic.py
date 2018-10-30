@@ -117,7 +117,7 @@ arrival_rate= 0.2
 t_interarrival_mean= 1.0 / arrival_rate
 
 # Traffic light green and red durations:
-t_green= 30.0; t_red= 40.0
+t_green= 30.0; t_red= 40.0; new_red=0;
 
 # The time for a car at the head of the queue to depart (clear the intersection)
 # is modeled as a triangular distribution with specified minimum, maximum, and
@@ -148,7 +148,9 @@ def arrival():
 
    while True:
       arrival_count+= 1
-
+      if(int(env.now) == int(new_red)):
+         callAgent()
+      #print (env.now)   
       if light == 'red' or len(queue):
 
          # The light is red or there is a queue of cars.  ==> The new car joins
@@ -207,7 +209,6 @@ def departure():
       # Generate departure delay as a random draw from triangular distribution:
       delay= random.triangular(left=t_depart_left, mode=t_depart_mode,
         right=t_depart_right)
-
       # Schedule next departure:
       yield env.timeout(delay)
 
@@ -219,7 +220,7 @@ def light():
    This generator function simulates state changes of the traffic light.  For
    simplicity, the light is either green or red--there is no yellow state.
    """
-   global env, light
+   global env, light, new_red
 
    while True:
 
@@ -242,13 +243,15 @@ def light():
       # Schedule event that will turn the light red:
       yield env.timeout(t_green)
 
-
+      
       # Section 4.2.2: Change the light to red.
       light= 'red'
+      new_red = int(env.now)+t_red
       print("\nThe light turned red at time %.3f."   % env.now)
-
+      
       # Schedule event that will turn the light green:
       yield env.timeout(t_red)
+     
 
 
 # Section 4.3: Schedule event that collects Q_stats.
@@ -265,9 +268,13 @@ def monitor():
    while True:
       Q_stats.count+= 1
       Q_stats.cars_waiting+= len(queue)
+      if(int(env.now) == int(new_red) - 6):
+         callAgent()   
       yield env.timeout(1.0)
 
 
+def callAgent():
+   print("Agent Called at time %.3f." % int(env.now))
 # Section 5: Schedule initial events and run the simulation.  Note: The first
 # change of the traffic light, first arrival of a car, and first statistical
 # monitoring event are scheduled by invoking `env.process`.  Subsequent changes
