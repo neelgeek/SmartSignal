@@ -4,10 +4,10 @@ import os,logging
 
 class agent:
 
-    def __init__(self,eps=0.4, alpha=0.5):
+    def __init__(self,eps=0.7, alpha=0.5):
         logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s',level=logging.DEBUG)
         self.eps = eps
-        #self.alpha = 0.3
+        self.alpha = 0.3
         if os.path.exists('./statespace.pickle'):
             pickle_in = open('statespace.pickle','rb')
             self.state=pickle.load(pickle_in)

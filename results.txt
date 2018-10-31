@@ -1,38 +1,114 @@
+=======================After Negative Reward in middle of green light======================
 eps = 0.4
 days= 5
 already trained ? = yes
-Mean number of cars waiting: 5.746
-Mean waiting time (seconds): 28.771
-
-
-eps = 0.3
-days= 5
-already trained ? = yes
-Mean number of cars waiting: 6.081
-Mean waiting time (seconds): 30.339
-
-
-eps = 0.45
-days= 5
-already trained ? = yes
-Mean number of cars waiting: 5.054
-Mean waiting time (seconds): 25.302
-
-eps = 0.45
-days= 5
-already trained ? = yes
-Mean number of cars waiting: 5.294
-Mean waiting time (seconds): 26.446
-
+Mean number of cars waiting: 7.109
+Mean waiting time (seconds): 35.621
 
 eps = 0.5
 days= 5
 already trained ? = yes
-Mean number of cars waiting: 4.991
-Mean waiting time (seconds): 24.952
+Mean number of cars waiting: 6.711
+Mean waiting time (seconds): 33.549
 
-ps = 0.55
+eps = 0.5
+days= 5
+already trained ? = no
+Mean number of cars waiting: 7.641
+Mean waiting time (seconds): 38.297
+
+====from this point,I found that further training was decreasing the time==========================
+eps = 0.4
+days= 5
+already trained ? = no
+Mean number of cars waiting: 7.373
+Mean waiting time (seconds): 36.802
+
+eps = 0.4
 days= 5
 already trained ? = yes
-Mean number of cars waiting: 4.595
-Mean waiting time (seconds): 23.043
+Mean number of cars waiting: 7.148
+Mean waiting time (seconds): 35.748
+
+eps = 0.5
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 6.557
+Mean waiting time (seconds): 32.794
+
+
+eps = 0.6
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 6.023
+Mean waiting time (seconds): 29.935
+
+eps = 0.7
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 5.425
+Mean waiting time (seconds): 27.108
+
+eps = 0.7
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 5.258
+Mean waiting time (seconds): 26.195
+
+
+eps = 1.0
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 4.044
+Mean waiting time (seconds): 20.178
+
+
+==============traffic simulation without RL agent=====================
+days = 30
+Mean number of cars waiting: 6.984
+Mean waiting time (seconds): 34.939
+
+==============with RL agent===========================================
+
+eps = 0.6
+days= 30
+already trained ? = no
+Mean number of cars waiting: 5.996
+Mean waiting time (seconds): 29.933
+
+eps = 0.6
+days= 30
+already trained ? = yes
+Mean number of cars waiting: 6.012
+Mean waiting time (seconds): 30.041
+
+eps = 0.6
+days= 30
+already trained ? = yes
+Mean number of cars waiting: 6.014
+Mean waiting time (seconds): 30.100
+
+
+eps = 0.7
+days= 30
+already trained ? = yes
+Mean number of cars waiting: 5.391
+Mean waiting time (seconds): 27.009
+
+eps = 0.7
+days= 30
+already trained ? = yes
+Mean number of cars waiting: 5.395
+Mean waiting time (seconds): 27.008
+
+eps=0.7
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 5.315
+Mean waiting time (seconds): 26.670
+
+eps=0.7
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 5.380
+Mean waiting time (seconds): 26.931
