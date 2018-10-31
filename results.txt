@@ -1,0 +1,38 @@
+eps = 0.4
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 5.746
+Mean waiting time (seconds): 28.771
+
+
+eps = 0.3
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 6.081
+Mean waiting time (seconds): 30.339
+
+
+eps = 0.45
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 5.054
+Mean waiting time (seconds): 25.302
+
+eps = 0.45
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 5.294
+Mean waiting time (seconds): 26.446
+
+
+eps = 0.5
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 4.991
+Mean waiting time (seconds): 24.952
+
+ps = 0.55
+days= 5
+already trained ? = yes
+Mean number of cars waiting: 4.595
+Mean waiting time (seconds): 23.043

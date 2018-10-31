@@ -1,98 +1,11 @@
-"""
-traffic_sim.py  Version 2.0
 
 
-OVERVIEW
-
-This Python script simulates automotive traffic arriving at a traffic light.
-The script demonstrates the following:
-
-(1) several basic principles of discrete-event simulation, including the
-representation of system states, the connection between events and changes of
-state, and the Poisson process,
-
-(2) the use of the SimPy module,
-
-(3) simulation of random deviates using NumPy, and
-
-(4) the use of Python generator functions.
-
-
-THE MODEL
-
-Cars drive on a single-lane road and arrive at the intersection from one
-direction only according to a Poisson process with specified rate.  Positions
-and velocities of the cars are not modeled, and there is thus no coordinate
-system.
-
-The traffic light switches between green and red at regular intervals; there is
-no yellow state.
-
-When a car arrives at a green light with no cars queued, it passes immediately
-through the intersection and departs the simulation.
-
-When a car arrives at a red light or with one or more cars queued at the
-intersection, it stops and joins the queue.
-
-When the light turns green, if there is a queue, cars enter the intersection one
-at a time.  Once a car has entered the intersection, it clears the intersection,
-regardless of the state of the light, after a delay that is a random draw from a
-triangular distribution.
-
-
-INPUTS
-
-All inputs are hardwired into the code.
-
-
-OUTPUTS
-
-The simulation generates a trace of events as it runs, and also reports
-estimates of the average number of cars in the queue and the average waiting
-time.
-
-
-FUTURE WORK
-
-This model might be extended in any of several directions.  Some possibilities
-include the following:
-
-(1) There are several sources of bias in the average waiting time: (a) The
-simulation starts with a green light.  (b) The simulation starts with no cars
-queued.  (c) Cars remaining in the queue at the end of the simulation do not
-contribute to the estimated waiting time.  The effects of (a) and (b) might be
-mitigated by eliminating the initial transient; this would involve collecting
-and saving individual waiting times, choosing alternative values for the
-duration of the initial transient, generating estimates using only the data
-outside of the transient interval, and then selecting one of these results using
-some statistical criteria. (We want the mean of the selected result to have no
-statistically significant difference from results based on longer transient
-intervals, but otherwise we want to discard as little of the data as possible).
-
-(2) The delay of the driver at the head of the queue in responding to the change
-of the light from red to green could be made somewhat longer than that of
-drivers who are further back in the queue.  This would allow for greater realism
-in the model without explicitly modeling positions and velocities of the cars.
-
-(3) One might have some fraction of the cars make a right-turn at the light,
-with the remaining cars going straight, and compare the capacity of a
-single-lane road, a two-lane road with no turn restrictions, and a two-lane road
-with a dedicated right-turn-only lane.
-
-
-AUTHOR
-
-Dr. Phillip M. Feldman
-"""
-
-
-# Section 1: Import from modules and define a utility class.
 
 from collections import deque # double-ended queue
 from numpy import random
 import simpy
 from simpy.util import start_delayed
-
+from envoirment import Env
 
 class Struct(object):
    """
@@ -104,12 +17,14 @@ class Struct(object):
       self.__dict__.update(kwargs)
 
 
+
+e = Env()
 # Section 2: Initializations.
 
 random.seed([1, 2, 3])
 
 # Total number of seconds to be simulated:
-end_time= 200.0
+end_time= (3600* 24 * 20) # seconds in hour * hours * days+
 
 # Cars cars arrive at the traffic light according to a Poisson process with an
 # average rate of 0.2 per second:
@@ -117,7 +32,7 @@ arrival_rate= 0.2
 t_interarrival_mean= 1.0 / arrival_rate
 
 # Traffic light green and red durations:
-t_green= 30.0; t_red= 40.0; new_red=0;
+t_green= 30.0; t_red= 40.0; new_red=0;new_green=0
 
 # The time for a car at the head of the queue to depart (clear the intersection)
 # is modeled as a triangular distribution with specified minimum, maximum, and
@@ -148,9 +63,7 @@ def arrival():
 
    while True:
       arrival_count+= 1
-      if(int(env.now) == int(new_red)):
-         callAgent()
-      #print (env.now)   
+      
       if light == 'red' or len(queue):
 
          # The light is red or there is a queue of cars.  ==> The new car joins
@@ -229,7 +142,7 @@ def light():
 
       light= 'green'
       print("\nThe light turned green at time %.3f." % env.now)
-
+      new_green = int(env.now)+t_green
       # If there are cars in the queue, schedule a departure event:
       if len(queue):
 
@@ -247,6 +160,7 @@ def light():
       # Section 4.2.2: Change the light to red.
       light= 'red'
       new_red = int(env.now)+t_red
+      after_Green(len(queue))
       print("\nThe light turned red at time %.3f."   % env.now)
       
       # Schedule event that will turn the light green:
@@ -269,18 +183,20 @@ def monitor():
       Q_stats.count+= 1
       Q_stats.cars_waiting+= len(queue)
       if(int(env.now) == int(new_red) - 6):
-         callAgent()   
+         before_Red(len(queue))
+
       yield env.timeout(1.0)
 
 
-def callAgent():
-   print("Agent Called at time %.3f." % int(env.now))
-# Section 5: Schedule initial events and run the simulation.  Note: The first
-# change of the traffic light, first arrival of a car, and first statistical
-# monitoring event are scheduled by invoking `env.process`.  Subsequent changes
-# will be scheduled by invoking the `timeout` method.  With this scheme, there
-# is only one event of each of these types scheduled at any time; this keeps the
-# event queue short, which is good for both memory utilization and running time.
+def before_Red(count):
+  global t_green
+  t_green=e.red_traffic(count)
+  
+  print("New green is: ",t_green)
+
+def after_Green(count):
+  e.green_traffic(count)
+  
 
 print("\nSimulation of Cars Arriving at Intersection Controlled by a Traffic "
   "Light\n\n")
@@ -301,6 +217,7 @@ env.process(monitor())
 # Let the simulation run for specified time:
 env.run(until=end_time)
 
+e.save_model()
 
 # Section 6: Report statistics.
 
