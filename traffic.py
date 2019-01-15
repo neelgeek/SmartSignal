@@ -25,7 +25,7 @@ reward_done = False
 random.seed([1, 2, 3])
 
 # Total number of seconds to be simulated:
-end_time= (3600* 24 * 5) # seconds in hour * hours * days+
+end_time= (3600* 24 * 10) # seconds in hour * hours * days+
 
 # Cars cars arrive at the traffic light according to a Poisson process with an
 # average rate of 0.2 per second:
