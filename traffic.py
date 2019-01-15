@@ -1,11 +1,11 @@
-
-
-
 from collections import deque # double-ended queue
 from numpy import random
 import simpy
 from simpy.util import start_delayed
 from envoirment import Env
+import time
+import LEDtest as led
+
 
 class Struct(object):
    """
@@ -19,6 +19,7 @@ class Struct(object):
 
 
 e = Env()
+
 reward_done = False
 # Section 2: Initializations.
 
@@ -64,7 +65,6 @@ def arrival():
 
    while True:
       arrival_count+= 1
-      
       if light == 'red' or len(queue):
 
          # The light is red or there is a queue of cars.  ==> The new car joins
@@ -104,7 +104,6 @@ def departure():
    global env, queue
 
    while True:
-
       # The car that entered the intersection clears the intersection:
       car_number, t_arrival= queue.popleft()
       print("Car #%d departed at time %.3f, leaving %d cars in the queue."
@@ -140,7 +139,7 @@ def light():
 
 
       # Section 4.2.1: Change the light to green.
-
+      led.green()
       light= 'green'
       print("\nThe light turned green at time %.3f." % env.now)
       new_green = int(env.now)+t_green
@@ -159,6 +158,7 @@ def light():
 
       
       # Section 4.2.2: Change the light to red.
+      led.red()
       light= 'red'
       new_red = int(env.now)+t_red
       if not reward_done:
@@ -214,7 +214,7 @@ print("\nSimulation of Cars Arriving at Intersection Controlled by a Traffic "
   "Light\n\n")
 
 # Initialize environment:
-env= simpy.Environment()
+env = simpy.rt.RealtimeEnvironment(factor=2.1)
 
 # Schedule first change of the traffic light:
 env.process(light())
