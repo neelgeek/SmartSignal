@@ -109,7 +109,7 @@ class Struct(object):
 random.seed([1, 2, 3])
 
 # Total number of seconds to be simulated:
-end_time= (3600* 24 * 30)
+end_time= (3600* 24 * 1)
 
 # Cars cars arrive at the traffic light according to a Poisson process with an
 # average rate of 0.2 per second:
