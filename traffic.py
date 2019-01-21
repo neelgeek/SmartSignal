@@ -4,7 +4,8 @@ import simpy
 from simpy.util import start_delayed
 from envoirment import Env
 import time
-import LEDtest as led
+import xlwt 
+#import LEDtest as led
 
 
 class Struct(object):
@@ -18,37 +19,9 @@ class Struct(object):
 
 
 
-e = Env()
 
-reward_done = False
 # Section 2: Initializations.
 
-random.seed([1, 2, 3])
-
-# Total number of seconds to be simulated:
-end_time= (3600* 24 * 10) # seconds in hour * hours * days+
-
-# Cars cars arrive at the traffic light according to a Poisson process with an
-# average rate of 0.2 per second:
-arrival_rate= 0.2
-t_interarrival_mean= 1.0 / arrival_rate
-
-# Traffic light green and red durations:
-t_green= 30.0; t_red= 40.0; new_red=0;new_green=0
-
-# The time for a car at the head of the queue to depart (clear the intersection)
-# is modeled as a triangular distribution with specified minimum, maximum, and
-# mode.
-t_depart_left= 1.6; t_depart_mode= 2.0; t_depart_right= 2.4
-
-# Initially, no cars are waiting at the light:
-queue= deque()
-
-# Track number of cars:
-arrival_count= departure_count= 0
-
-Q_stats= Struct(count=0, cars_waiting=0)
-W_stats= Struct(count=0, waiting_time=0.0)
 
 
 # Section 3: Arrival event.
@@ -71,15 +44,15 @@ def arrival():
          # the queue.  Append a tuple that contains the number of the car and
          # the time at which it arrived:
          queue.append((arrival_count, env.now))
-         print("Car #%d arrived and joined the queue at position %d at time "
-           "%.3f." % (arrival_count, len(queue), env.now))
+        #  print("Car #%d arrived and joined the queue at position %d at time "
+        #    "%.3f." % (arrival_count, len(queue), env.now))
 
       else:
 
          # The light is green and no cars are waiting.  ==> The new car passes
          # through the intersection immediately.
-         print("Car #%d arrived to a green light with no cars waiting at time "
-           "%.3f." % (arrival_count, env.now))
+        #  print("Car #%d arrived to a green light with no cars waiting at time "
+        #    "%.3f." % (arrival_count, env.now))
 
          # Record waiting time statistics.  (This car experienced zero waiting
          # time, so we increment the count of cars, but the cumulative waiting
@@ -106,8 +79,8 @@ def departure():
    while True:
       # The car that entered the intersection clears the intersection:
       car_number, t_arrival= queue.popleft()
-      print("Car #%d departed at time %.3f, leaving %d cars in the queue."
-        % (car_number, env.now, len(queue)))
+      # print("Car #%d departed at time %.3f, leaving %d cars in the queue."
+        # % (car_number, env.now, len(queue)))
 
       # Record waiting time statistics:
       W_stats.count+= 1
@@ -128,7 +101,7 @@ def departure():
 
 # Section 4.2: Light change-of-state event.
 
-def light():
+def light1():
    """
    This generator function simulates state changes of the traffic light.  For
    simplicity, the light is either green or red--there is no yellow state.
@@ -139,9 +112,9 @@ def light():
 
 
       # Section 4.2.1: Change the light to green.
-      led.green()
+      #led.green()
       light= 'green'
-      print("\nThe light turned green at time %.3f." % env.now)
+      # print("\nThe light turned green at time %.3f." % env.now)
       new_green = int(env.now)+t_green
       # If there are cars in the queue, schedule a departure event:
       if len(queue):
@@ -158,12 +131,12 @@ def light():
 
       
       # Section 4.2.2: Change the light to red.
-      led.red()
+      #led.red()
       light= 'red'
       new_red = int(env.now)+t_red
       if not reward_done:
         after_Green(len(queue))
-      print("\nThe light turned red at time %.3f."   % env.now)
+      # print("\nThe light turned red at time %.3f."   % env.now)
       
       # Schedule event that will turn the light green:
       yield env.timeout(t_red)
@@ -200,7 +173,7 @@ def before_Red(count):
   global t_green
   t_green=e.red_traffic(count) #call before end of red,so that green timing can be taken from agent
   
-  print("New green is: ",t_green)
+  # print("New green is: ",t_green)
 
 def after_Green(count):
   e.green_traffic(count) #call at end of green,so that reward can be given
@@ -210,33 +183,75 @@ def bet_Green(count): #check if green time is too much
 
   
 
-print("\nSimulation of Cars Arriving at Intersection Controlled by a Traffic "
-  "Light\n\n")
-
+# print("\nSimulation of Cars Arriving at Intersection Controlled by a Traffic "
+#   "Light\n\n")
 # Initialize environment:
-env = simpy.rt.RealtimeEnvironment(factor=2.1)
+#env = simpy.rt.RealtimeEnvironment(factor=2.1)
+book = xlwt.Workbook()
+sheet = book.add_sheet('Results')
+row =1
+progress=0
+for ep in range(0,11,1):
+  row+=1
+  for a in range(0,11,1):
+    row+=1
+    for g in range(0,11,1):
+        random.seed([1, 2, 3])
 
-# Schedule first change of the traffic light:
-env.process(light())
+        # Total number of seconds to be simulated:
+        end_time= (3600* 1 * 1) # seconds in hour * hours * days+
 
-# Schedule first arrival of a car:
-t_first_arrival= random.exponential(t_interarrival_mean)
-start_delayed(env, arrival(), delay=t_first_arrival)
+        # Cars cars arrive at the traffic light according to a Poisson process with an
+        # average rate of 0.2 per second:
+        arrival_rate= 0.2
+        t_interarrival_mean= 1.0 / arrival_rate
 
-# Schedule first statistical monitoring event:
-env.process(monitor())
+        # Traffic light green and red durations:
+        t_green= 30.0; t_red= 40.0; new_red=0;new_green=0
 
-# Let the simulation run for specified time:
-env.run(until=end_time)
+        # The time for a car at the head of the queue to depart (clear the intersection)
+        # is modeled as a triangular distribution with specified minimum, maximum, and
+        # mode.
+        t_depart_left= 1.6; t_depart_mode= 2.0; t_depart_right= 2.4
 
-e.save_model()
+        # Initially, no cars are waiting at the light:
+        queue= deque()
 
-# Section 6: Report statistics.
+        # Track number of cars:
+        arrival_count= departure_count= 0
 
-print("\n\n      *** Statistics ***\n\n")
+        Q_stats= Struct(count=0, cars_waiting=0)
+        W_stats= Struct(count=0, waiting_time=0.0)
 
-print("Mean number of cars waiting: %.3f"
-  % (Q_stats.cars_waiting / float(Q_stats.count)))
+        e = Env(ep/10,a/10,g/10)
+        reward_done = False
+        env = simpy.Environment()
+        # Schedule first change of the traffic light:
+        env.process(light1())
 
-print("Mean waiting time (seconds): %.3f"
-  % (W_stats.waiting_time / float(W_stats.count)))
+        # Schedule first arrival of a car:
+        t_first_arrival= random.exponential(t_interarrival_mean)
+        start_delayed(env, arrival(), delay=t_first_arrival)
+
+        # Schedule first statistical monitoring event:
+        env.process(monitor())
+
+        # Let the simulation run for specified time:
+        env.run(until=end_time)
+
+        e.save_model()
+
+        # Section 6: Report statistics.
+
+        mc= (Q_stats.cars_waiting / float(Q_stats.count))
+        mt =(W_stats.waiting_time / float(W_stats.count))
+        sheet.write(row,0,ep/10)
+        sheet.write(row,1,a/10)
+        sheet.write(row,2,g/10)
+        sheet.write(row,3,mc)
+        sheet.write(row,4,mt)
+        row+=1
+        progress+=1
+        print("Simulation at ",progress/10,"%")
+        print("eps=",ep/10," alpha=",a/10," gamma=",g/10)
+book.save('results/results.xls')

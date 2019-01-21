@@ -2,8 +2,8 @@ import numpy as np
 from agent import agent
 
 class Env:
-    def __init__(self):
-        self.a = agent()
+    def __init__(self,ep,a,g):
+        self.a = agent(ep,a,g)
         self.last_traffic=0
 
     
@@ -25,7 +25,7 @@ class Env:
         traf_den = self.getTraDen(traf_count)
         if traf_den < self.last_traffic/3:
             r=-1
-            print("Negative Reward assigned")
+            # print("Negative Reward assigned")
             self.a.on_reward(r)
             return True
         else:
@@ -39,12 +39,12 @@ class Env:
         return count
 
     def reward(self,traf_den):
-        print(traf_den," ",self.last_traffic)
+        #print(traf_den," ",self.last_traffic)
         if traf_den < self.last_traffic :
             r = 1
         else:
             r = -1
-        print("Reward is ",r)
+        # print("Reward is ",r)
         return r
 
     def save_model(self):
