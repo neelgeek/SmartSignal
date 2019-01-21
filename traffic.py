@@ -20,7 +20,6 @@ class Struct(object):
 
 
 
-# Section 2: Initializations.
 
 
 
@@ -189,7 +188,12 @@ def bet_Green(count): #check if green time is too much
 #env = simpy.rt.RealtimeEnvironment(factor=2.1)
 book = xlwt.Workbook()
 sheet = book.add_sheet('Results')
-row =1
+sheet.write(0,0,"Epsilon")
+sheet.write(0,1,"Alpha")
+sheet.write(0,2,"Gamma")
+sheet.write(0,3,"Mean Cars")
+sheet.write(0,4,"Mean Waiting")
+row =-1
 progress=0
 for ep in range(0,11,1):
   row+=1
@@ -197,9 +201,9 @@ for ep in range(0,11,1):
     row+=1
     for g in range(0,11,1):
         random.seed([1, 2, 3])
-
+        # Section 2: Initializations.
         # Total number of seconds to be simulated:
-        end_time= (3600* 1 * 1) # seconds in hour * hours * days+
+        end_time= (3600* 24 * 5) # seconds in hour * hours * days+
 
         # Cars cars arrive at the traffic light according to a Poisson process with an
         # average rate of 0.2 per second:
@@ -252,6 +256,8 @@ for ep in range(0,11,1):
         sheet.write(row,4,mt)
         row+=1
         progress+=1
-        print("Simulation at ",progress/10,"%")
+        per =(progress/1331)*100
+        print("Simulation at %0.3f"%per,"%")
         print("eps=",ep/10," alpha=",a/10," gamma=",g/10)
 book.save('results/results.xls')
+print('Simulation Complete')

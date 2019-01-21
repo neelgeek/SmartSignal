@@ -63,17 +63,17 @@ class agent:
         return 0
     
     def save_model(self):
-        with open('models/statespace.pickle','wb') as f :
-            np.savetxt("models/statespace.txt",self.state)
+        with open('./models/statespace.pickle','wb') as f :
+            np.savetxt("./models/statespace.txt",self.state)
             pickle.dump(self.state,f)
         
-        with open('models/Qmat.pickle','wb') as f:
-            np.savetxt("models/Qmat.txt",self.Qmat)
+        with open('./models/Qmat.pickle','wb') as f:
+            np.savetxt("./models/Qmat.txt",self.Qmat)
             pickle.dump(self.Qmat,f)
             
     def load_model(self): 
-        if os.path.exists('models/statespace.pickle'):
-            pickle_in = open('models/statespace.pickle','rb')
+        if os.path.exists('./models/statespace.pickle'):
+            pickle_in = open('./models/statespace.pickle','rb')
             state=pickle.load(pickle_in)
             logging.debug("Loaded Pickle")
         else:
@@ -82,8 +82,8 @@ class agent:
         return state
     
     def load_Q(self):
-        if os.path.exists('models/Qmat.pickle'):
-            pickle_in = open('/modelsQmat.pickle','rb')
+        if os.path.exists('./models/Qmat.pickle'):
+            pickle_in = open('./models/Qmat.pickle','rb')
             state=pickle.load(pickle_in)
             logging.debug("Loaded Pickle")
         else:
