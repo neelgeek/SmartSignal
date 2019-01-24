@@ -9,10 +9,10 @@ class agent:
         self.eps = eps
         self.alpha = alpha 
         self.gamma = gamma
-        self.state = state = np.zeros((101,10),dtype=np.int64)
+        #self.state = state = np.zeros((101,10),dtype=np.int64)
         self.last_action = []
         self.actions=list(range(10,110,10)) # generate a list from 10 to 100
-        self.Qmat = self.load_Q()
+        self.Qmat = np.zeros((101,10),dtype=np.int64)
         self.Prev_Q = []
         self.CQ = []
         self.QRew = 0
@@ -24,21 +24,15 @@ class agent:
             # print("Now Exploring")
             #take random action i.e. explore
             choice = (np.random.choice(10))  #take a random choice from the 6 possile actions
-            self.last_action = [traf_den,choice]
-            self.CQ = [traf_den,choice]
             green_time = self.actions[choice]
             
         else :
             # print("Now Exploiting")
             #exploit (select the action which has max reward for the given state)
-            # match_state = self.state[traf_den]
-            # choice = np.argmax(match_state)
             match_state = self.Qmat[traf_den]
             choice = np.argmax(match_state)
-            self.last_action = [traf_den,choice]
-            self.CQ = [traf_den,choice]
             green_time = self.actions[choice] 
-            
+            self.CQ = [traf_den,choice]
         return green_time
 
     def on_red(self,traf_den):
@@ -49,12 +43,9 @@ class agent:
 
     def on_reward(self,reward):
         # print("On Reward Called for ",self.last_action)
-        if self.last_action:
-            self.state[self.last_action[0],self.last_action[1]] += reward
         self.QRew = reward
-    
+
     def update_Q(self,new_state):
-        
         Q_cur = self.Qmat[self.Prev_Q[0],self.Prev_Q[1]]
         # print(Q_cur)
         Q_cur=Q_cur + self.alpha*(self.QRew+(self.gamma* np.max(self.Qmat[new_state]))-Q_cur)  
@@ -62,24 +53,6 @@ class agent:
         self.Qmat[self.Prev_Q[0],self.Prev_Q[1]] = Q_cur
         return 0
     
-    def save_model(self):
-        with open('./models/statespace.pickle','wb') as f :
-            np.savetxt("./models/statespace.txt",self.state)
-            pickle.dump(self.state,f)
-        
-        with open('./models/Qmat.pickle','wb') as f:
-            np.savetxt("./models/Qmat.txt",self.Qmat)
-            pickle.dump(self.Qmat,f)
-            
-    def load_model(self): 
-        if os.path.exists('./models/statespace.pickle'):
-            pickle_in = open('./models/statespace.pickle','rb')
-            state=pickle.load(pickle_in)
-            logging.debug("Loaded Pickle")
-        else:
-            state = np.zeros((101,10),dtype=np.int64)
-            logging.debug("Made a new state")
-        return state
     
     def load_Q(self):
         if os.path.exists('./models/Qmat.pickle'):
@@ -92,3 +65,23 @@ class agent:
         return state
 
 
+
+    
+    def save_model(self):
+        # with open('./models/statespace.pickle','wb') as f :
+        #     np.savetxt("./models/statespace.txt",self.state)
+        #     pickle.dump(self.state,f)
+        
+        with open('./models/Qmat.pickle','wb') as f:
+            np.savetxt("./models/Qmat.txt",self.Qmat)
+            pickle.dump(self.Qmat,f)
+            
+    # def load_model(self): 
+    #     if os.path.exists('./models/statespace.pickle'):
+    #         pickle_in = open('./models/statespace.pickle','rb')
+    #         state=pickle.load(pickle_in)
+    #         logging.debug("Loaded Pickle")
+    #     else:
+    #         state = np.zeros((101,10),dtype=np.int64)
+    #         logging.debug("Made a new state")
+    #     return state
