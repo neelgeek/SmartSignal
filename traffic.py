@@ -195,11 +195,11 @@ sheet.write(0,3,"Mean Cars")
 sheet.write(0,4,"Mean Waiting")
 row =-1
 progress=0
-for ep in range(0,11,1):
+for ep in range(1,11,1):
   row+=1
-  for a in range(0,11,1):
+  for a in range(1,11,1):
     row+=1
-    for g in range(0,11,1):
+    for g in range(1,11,1):
         random.seed([1, 2, 3])
         # Section 2: Initializations.
         # Total number of seconds to be simulated:
