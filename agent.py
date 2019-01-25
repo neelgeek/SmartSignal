@@ -14,25 +14,24 @@ class agent:
         self.actions=list(range(10,110,10)) # generate a list from 10 to 100
         self.Qmat = np.zeros((101,10),dtype=np.int64)
         self.Prev_Q = []
-        self.CQ = []
         self.QRew = 0
         
     def take_action(self,traf_den):
-        self.Prev_Q = self.CQ
+        # self.Prev_Q = self.CQ
         r = np.random.rand() # generating a random no. for eps greedy
         if r <= self.eps :
             # print("Now Exploring")
             #take random action i.e. explore
             choice = (np.random.choice(10))  #take a random choice from the 6 possile actions
             green_time = self.actions[choice]
-            
+            self.Prev_Q = [traf_den,choice]
         else :
             # print("Now Exploiting")
             #exploit (select the action which has max reward for the given state)
             match_state = self.Qmat[traf_den]
             choice = np.argmax(match_state)
             green_time = self.actions[choice] 
-            self.CQ = [traf_den,choice]
+            self.Prev_Q = [traf_den,choice]
         return green_time
 
     def on_red(self,traf_den):
