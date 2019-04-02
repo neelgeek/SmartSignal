@@ -12,7 +12,7 @@ class agent:
         #self.state = state = np.zeros((101,10),dtype=np.int64)
         self.last_action = []
         self.actions=list(range(10,110,10)) # generate a list from 10 to 100
-        self.Qmat =  np.zeros((101,10),dtype=np.float)
+        self.Qmat =  self.load_Q()
         self.Prev_Q = []
         self.QRew = 0
         
