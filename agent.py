@@ -12,7 +12,7 @@ class agent:
         #self.state = state = np.zeros((101,10),dtype=np.int64)
         self.last_action = []
         self.actions=list(range(10,110,10)) # generate a list from 10 to 100
-        self.Qmat = self.load_Q()
+        self.Qmat =  np.zeros((101,10),dtype=np.float)
         self.Prev_Q = []
         self.QRew = 0
         
@@ -46,20 +46,20 @@ class agent:
 
     def update_Q(self,new_state):
         Q_cur = self.Qmat[self.Prev_Q[0],self.Prev_Q[1]]
-        # print(Q_cur)
+    
         Q_cur=Q_cur + self.alpha*(self.QRew+(self.gamma* np.max(self.Qmat[new_state]))-Q_cur)  
-        # print(Q_cur)
-        self.Qmat[self.Prev_Q[0],self.Prev_Q[1]] = Q_cur
+       
+        self.Qmat[self.Prev_Q[0],self.Prev_Q[1]] =Q_cur
         return 0
     
     
     def load_Q(self):
         if os.path.exists('./models/Qmat.pickle'):
             pickle_in = open('./models/Qmat.pickle','rb')
-            state=pickle.load(pickle_in)
+            state=np.matrix(pickle.load(pickle_in),dtype=np.float)
             logging.debug("Loaded Pickle")
         else:
-            state = np.zeros((101,10),dtype=np.int64)
+            state = np.zeros((101,10),dtype=np.float)
             logging.debug("Made a new state")
         return state
 
@@ -70,10 +70,12 @@ class agent:
         # with open('./models/statespace.pickle','wb') as f :
         #     np.savetxt("./models/statespace.txt",self.state)
         #     pickle.dump(self.state,f)
+        # print(self.Qmat)
         
         with open('./models/Qmat.pickle','wb') as f:
             np.savetxt("./models/Qmat.txt",self.Qmat)
             pickle.dump(self.Qmat,f)
+        print("Pickle Saved")
             
     # def load_model(self): 
     #     if os.path.exists('./models/statespace.pickle'):

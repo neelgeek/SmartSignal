@@ -69,15 +69,15 @@ def arrival():
          # the queue.  Append a tuple that contains the number of the car and
          # the time at which it arrived:
          queue.append((arrival_count, env.now))
-         print("Car #%d arrived and joined the queue at position %d at time "
-           "%.3f." % (arrival_count, len(queue), env.now))
+        #  print("Car #%d arrived and joined the queue at position %d at time "
+          #  "%.3f." % (arrival_count, len(queue), env.now))
 
       else:
 
          # The light is green and no cars are waiting.  ==> The new car passes
          # through the intersection immediately.
-         print("Car #%d arrived to a green light with no cars waiting at time "
-           "%.3f." % (arrival_count, env.now))
+        #  print("Car #%d arrived to a green light with no cars waiting at time "
+          #  "%.3f." % (arrival_count, env.now))
 
          # Record waiting time statistics.  (This car experienced zero waiting
          # time, so we increment the count of cars, but the cumulative waiting
@@ -105,8 +105,8 @@ def departure():
 
       # The car that entered the intersection clears the intersection:
       car_number, t_arrival= queue.popleft()
-      print("Car #%d departed at time %.3f, leaving %d cars in the queue."
-        % (car_number, env.now, len(queue)))
+      # print("Car #%d departed at time %.3f, leaving %d cars in the queue."
+        # % (car_number, env.now, len(queue)))
 
       # Record waiting time statistics:
       W_stats.count+= 1
@@ -140,8 +140,8 @@ def light():
       # Section 4.2.1: Change the light to green.
 
       light= 'green'
-      print("\nThe light turned green at time %.3f." % env.now)
-      new_green = int(env.now)+t_green
+      # print("\nThe light turned green at time %.3f." % env.now)
+      # new_green = int(env.now)+t_green
       # If there are cars in the queue, schedule a departure event:
       if len(queue):
 
@@ -161,7 +161,7 @@ def light():
       new_red = int(env.now)+t_red
       if not reward_done:
         after_Green(len(queue))
-      print("\nThe light turned red at time %.3f."   % env.now)
+      # print("\nThe light turned red at time %.3f."   % env.now)
       
       # Schedule event that will turn the light green:
       yield env.timeout(t_red)
@@ -198,7 +198,7 @@ def before_Red(count):
   global t_green
   t_green=e.red_traffic(count) #call before end of red,so that green timing can be taken from agent
   
-  print("New green is: ",t_green)
+  # print("New green is: ",t_green)
 
 def after_Green(count):
   e.green_traffic(count) #call at end of green,so that reward can be given
