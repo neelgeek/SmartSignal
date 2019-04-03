@@ -74,7 +74,7 @@ class agent:
         
         with open('./models/Qmat.pickle','wb') as f:
             np.savetxt("./models/Qmat.txt",self.Qmat)
-            pickle.dump(self.Qmat,f)
+            pickle.dump(self.Qmat,f,protocol=2)
         print("Pickle Saved")
             
     # def load_model(self): 
